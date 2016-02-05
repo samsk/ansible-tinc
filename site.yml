@@ -1,16 +1,12 @@
 ---
 
-- hosts: all
-  tasks:
-    - group_by: key=tinc-{{ tinc_type }}
-
 # generate config for all hosts
-- hosts: all
+- hosts: '{{ vpn_name | default("UNDEFINED") }}'
   connection: local
   roles:
-    - tinc-config
+    - { role: 'tinc-config', tags: 'config' }
 
 # deploy config to gw hosts
-- hosts: tinc-gw
+- hosts: '{{ vpn_name | default("UNDEFINED") }}'
   roles:
-    - tinc-deploy
+    - { role: 'tinc-deploy', tags: 'deploy', when: "tinc_type == 'gw'" }
