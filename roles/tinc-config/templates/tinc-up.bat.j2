@@ -1,0 +1,12 @@
+##
+# {{ ansible_managed }}
+
+REM Let's find out the name of the interface that addtap just created. Sorry this is so complicated, Windows scripting is weak
+FOR /F "tokens=1 delims=:" %A IN ('ipconfig /all ^| findstr /N "TAP-Win"') DO SET linenum=%A
+SET /A linenum = %linenum% - 3
+FOR /F "tokens=2*" %A IN ('ipconfig /all ^| findstr /N ".*" ^| findstr /B "%linenum%:"') DO set interfaceName=%B
+SET interfaceName=%interfaceName:~0,-1%
+REM Now let's change it to "tincVPN"
+
+netsh interface set interface name="%interfaceName%" newname="tincVPN"
+netsh interface ip set address name="tincVPN" source=static address={{ tinc_ip }} mask=255.255.255.0 gateway=none

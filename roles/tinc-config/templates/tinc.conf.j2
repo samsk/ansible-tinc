@@ -1,7 +1,8 @@
 ##
 # {{ ansible_managed }}
 
-Name = {{ tinc_hostname }}
+Name = {{ tinc_host }}
+BindToAddress = * 23001
 
 #Device = /dev/net/tun
 DeviceType = tap
@@ -15,9 +16,9 @@ DecrementTTL = no
 LocalDiscovery = yes
 
 {% for host in groups['all'] %}
-{% if tinc_type == 'gw' %}
-{% if tinc_host != hostvars[host]['tinc_host'] %}
-ConnectTo = {{ hostvars[host]['tinc_host'] }}
+{% if (hostvars[host]['tinc_type'] | default('client')) == 'gw' %}
+{% if tinc_hostname != hostvars[host]['tinc_hostname'] %}
+ConnectTo = {{ hostvars[host]['tinc_hostname'] | replace(".", "_") }}
 {% endif %}
 {% endif %}
 {% endfor %}

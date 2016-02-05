@@ -1,4 +1,11 @@
 ---
 
-- name: Debug
-  debug: msg="Processing {{ tinc_host }}"
+- name: Clear hosts config dir
+  file: >
+    path=/etc/tinc/{{ vpn_name }}/hosts
+    state=absent
+
+- name: Deploy config
+  synchronize: >
+    src={{ host_config_dir }}/
+    dest=/etc/tinc/{{ vpn_name }}

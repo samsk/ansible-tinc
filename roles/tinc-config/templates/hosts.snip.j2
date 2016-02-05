@@ -1,0 +1,9 @@
+#### BEGIN tinc/{{ vpn_name }} hosts ####
+## {{ ansible_managed }}
+
+{% for host in groups['all'] %}
+{{ hostvars[host]['tinc_ip'] }} {{ hostvars[host]['tinc_hostname'] }}
+{% endfor %}
+
+##
+#### END tinc/{{ vpn_name }} hosts ####
