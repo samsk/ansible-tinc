@@ -1,0 +1,83 @@
+---
+
+- name: Create TMP dir
+  file: >
+    path={{ all_config_dir }}
+    recurse=True
+    state=directory
+
+- name: Create hosts config dir
+  file: >
+    path={{ host_config_dir }}/hosts
+    recurse=True
+    state=directory
+
+- name: Generate tinc.conf
+  template: >
+    src=tinc.conf.j2
+    dest={{ host_config_dir }}/tinc.conf
+
+- name: Create host config
+  when: tinc_type == 'gw'
+  template: >
+    src=host.conf.j2
+    dest={{ host_config_dir }}/hosts/{{ tinc_hostname }}
+
+- name: Add Address to host config
+  when: tinc_type == 'gw'
+  lineinfile: >
+    dest={{ host_config_dir }}/hosts/{{ tinc_hostname }}
+    line="Address = {{ tinc_ip }}"
+    create=yes
+
+- name: Add Subnet ip to host config
+  when: tinc_type == 'gw'
+  lineinfile: >
+    dest={{ host_config_dir }}/hosts/{{ tinc_hostname }}
+    line="Subnet = {{ tinc_ip }}/32"
+    create=yes
+
+- name: Generate RSA private key
+  shell: openssl genrsa -out {{ host_config_dir }}/rsa_key.priv 4096
+  args:
+    creates: "{{ host_config_dir }}/rsa_key.priv"
+
+- name: Export RSA public key
+  shell: openssl rsa -in {{ host_config_dir }}/rsa_key.priv -outform PEM -out {{ host_config_dir }}/rsa_key.pub -pubout
+  args:
+    creates: "{{ host_config_dir }}/rsa_key.pub"
+
+- name: Add public key to host config
+  when: tinc_type == 'gw'
+  shell: cat {{ host_config_dir }}/rsa_key.pub >> {{ host_config_dir }}/hosts/{{ tinc_hostname }}
+
+- name: Create tinc-up
+  template: >
+    src=tinc-up.j2
+    dest={{ host_config_dir }}/tinc-up
+    mode=0755
+
+- name: Create tinc-down
+  template: >
+    src=tinc-down.j2
+    dest={{ host_config_dir }}/tinc-down
+    mode=0755
+
+- name: Fetch tinc host config
+  when: tinc_type == 'gw'
+  shell: cp -f {{ host_config_dir }}/hosts/{{ tinc_hostname }} {{ all_config_dir }}/
+
+- name: Distribute tinc host config
+  shell: cp -f {{ all_config_dir }}/* {{ host_config_dir }}/hosts/
+
+- name: Remote TMP dir
+  command: rm -f {{ all_config_dir }}/*
+
+#- name: Build hosts file
+#  lineinfile: >
+#    dest=/etc/hosts
+#    regexp='.*{{ item }}$'
+#    line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
+#    state=present
+#  when: hostvars[item].ansible_default_ipv4.address is defined
+#  with_items: groups['tinc']

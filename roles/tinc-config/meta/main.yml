@@ -1,0 +1,4 @@
+---
+
+dependencies:
+  - role: tinc-common

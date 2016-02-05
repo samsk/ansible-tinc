@@ -1,0 +1,23 @@
+##
+# {{ ansible_managed }}
+
+Name = {{ tinc_hostname }}
+
+#Device = /dev/net/tun
+DeviceType = tap
+AddressFamily = ipv4
+#Interface = tun0
+Mode = switch
+
+DirectOnly = no
+Broadcast = mst
+DecrementTTL = no
+LocalDiscovery = yes
+
+{% for host in groups['all'] %}
+{% if tinc_type == 'gw' %}
+{% if tinc_host != hostvars[host]['tinc_host'] %}
+ConnectTo = {{ hostvars[host]['tinc_host'] }}
+{% endif %}
+{% endif %}
+{% endfor %}

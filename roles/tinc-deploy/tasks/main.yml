@@ -1,0 +1,4 @@
+---
+
+- name: Debug
+  debug: msg="Processing {{ tinc_host }}"

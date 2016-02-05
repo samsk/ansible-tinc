@@ -1,5 +1,16 @@
 ---
 
 - hosts: all
+  tasks:
+    - group_by: key=tinc-{{ tinc_type }}
+
+# generate config for all hosts
+- hosts: all
+  connection: local
   roles:
-    - tinc
+    - tinc-config
+
+# deploy config to gw hosts
+- hosts: tinc-gw
+  roles:
+    - tinc-deploy

@@ -1,0 +1,8 @@
+---
+
+config_dir: /etc/tinc/{{ vpn_name }}/config
+all_config_dir: "{{ config_dir }}/all"
+host_config_dir: "{{ config_dir }}/{{ tinc_host }}"
+
+tinc_type: 'client'
+tinc_indirect: 'no'

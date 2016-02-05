@@ -2,5 +2,5 @@
 
 - name: restart tinc
   service: >
-    name=tinc
+    name=tincd
     state=restarted
