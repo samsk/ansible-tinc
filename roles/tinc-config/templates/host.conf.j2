@@ -3,3 +3,10 @@
 Port = 23001
 Compression = 10
 IndirectData = {{ tinc_indirect }}
+
+{% if tinc_remote is defined %}
+Address = {{ tinc_remote }}
+{% else %}
+Address = {{ ansible_host }}
+{% endif %}
+Subnet = {{ tinc_ip }}/{{ tinc_subnet }}

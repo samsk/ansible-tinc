@@ -2,9 +2,7 @@
 #
 # {{ ansible_managed }}
 
-ifconfig $INTERFACE down
-
-SN="tinc-down"
+SN="host-up"
 DN=`dirname "$0"`
 DN=`dirname "$DN"`
 [ -e $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"

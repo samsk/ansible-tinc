@@ -2,4 +2,23 @@
 #
 # {{ ansible_managed }}
 
-exec ifconfig $INTERFACE {{ tinc_ip }} netmask 255.255.255.0
+ifconfig $INTERFACE {{ tinc_ip }} netmask 255.255.255.0
+
+SN="tinc-up"
+DN=`dirname "$0"`
+DN=`dirname "$DN"`
+[ -e $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
+[ -e $DN/$SN ] && $DN/$SN "$@"
+
+# append hosts as needed
+#if [ -f /etc/tinc/{{ vpn_name }}/hosts.snip ] \
+#	&& -w /etc/hosts \
+#	&& ! grep "### BEGIN tinc/{{ vpn_name }} hosts ###" /etc/hosts >/dev/null;
+#then
+#	cp -f /etc/hosts /etc/hosts.tinc-{{ vpn_name }};
+#	echo >> /etc/hosts;
+#	cat /etc/tinc/{{ vpn_name }}/hosts.snip >> /etc/hosts;
+#	echo >> /etc/hosts;
+#fi;
+
+exit 0

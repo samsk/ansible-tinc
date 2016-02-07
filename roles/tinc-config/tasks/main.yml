@@ -29,24 +29,9 @@
     dest={{ host_config_dir }}/tinc.conf
 
 - name: Create host config
-  when: tinc_type == 'gw'
   template: >
     src=host.conf.j2
     dest={{ host_config_dir }}/hosts/{{ tinc_host }}
-
-- name: Add Address to host config
-  when: tinc_type == 'gw'
-  lineinfile: >
-    dest={{ host_config_dir }}/hosts/{{ tinc_host }}
-    line="Address = {{ ansible_host }}"
-    create=yes
-
-- name: Add Subnet ip to host config
-  when: tinc_type == 'gw'
-  lineinfile: >
-    dest={{ host_config_dir }}/hosts/{{ tinc_host }}
-    line="Subnet = {{ tinc_ip }}/32"
-    create=yes
 
 - name: Generate RSA private key
   shell: openssl genrsa -out {{ host_config_dir }}/rsa_key.priv 4096
@@ -64,26 +49,21 @@
     creates: "{{ host_config_dir }}/rsa_key.pub"
 
 - name: Add public key to host config
-  when: tinc_type == 'gw'
   shell: cat {{ host_config_dir }}/rsa_key.pub >> {{ host_config_dir }}/hosts/{{ tinc_host }}
 
-- name: Create tinc-up
+- name: Create scripts
   template: >
-    src=tinc-up.j2
-    dest={{ host_config_dir }}/tinc-up
+    src={{ item }}.j2
+    dest={{ host_config_dir }}/{{ item }}
     mode=0755
-
-- name: Create tinc-up.bat
-  template: >
-    src=tinc-up.bat.j2
-    dest={{ host_config_dir }}/tinc-up.bat
-    mode=0755
-
-- name: Create tinc-down
-  template: >
-    src=tinc-down.j2
-    dest={{ host_config_dir }}/tinc-down
-    mode=0755
+  with_items:
+    - tinc-up
+    - tinc-down
+    - tinc-up.bat
+    - host-up
+    - host-down
+    - subnet-up
+    - subnet-down
 
 - name: Build hosts.snip
   template: >
@@ -92,7 +72,6 @@
     mode=0644
 
 - name: Fetch tinc host config
-  when: tinc_type == 'gw'
   shell: cp -f {{ host_config_dir }}/hosts/{{ tinc_host }} {{ all_config_dir }}/
 
 - name: Distribute tinc host config
@@ -100,3 +79,8 @@
 
 - name: Remote TMP dir
   command: rm -f {{ all_config_dir }}/*
+
+- name: Pack client configs
+  shell: tar -czf {{ config_dir }}/{{ tinc_host }}.tar.gz .
+  args:
+    chdir: "{{ host_config_dir }}"

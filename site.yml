@@ -9,4 +9,4 @@
 # deploy config to gw hosts
 - hosts: '{{ vpn_name | default("UNDEFINED") }}'
   roles:
-    - { role: 'tinc-deploy', tags: 'deploy', when: "tinc_type == 'gw'" }
+    - { role: 'tinc-deploy', tags: 'deploy', when: "ansible_ssh_host is defined" }
