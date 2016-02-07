@@ -2,7 +2,7 @@
 # {{ ansible_managed }}
 
 Name = {{ tinc_host }}
-BindToAddress = * 23001
+BindToAddress = * {{ tinc_port }}
 
 #Device = /dev/net/tun
 DeviceType = tap
@@ -15,8 +15,31 @@ Broadcast = mst
 DecrementTTL = no
 LocalDiscovery = yes
 
+{# generate ConnectTo #}
+{% if tinc_connect is undefined -%}
+
 {% for host in groups['all'] %}
 {% if inventory_hostname != hostvars[host]['inventory_hostname'] and hostvars[host]['ansible_ssh_host'] is defined %}
 ConnectTo = {{ hostvars[host]['inventory_hostname'] | replace(".", "_") }}
 {% endif %}
 {% endfor %}
+
+{%- elif tinc_connect is not string and tinc_connect is iterable -%}
+
+{% for host in tinc_connect %}
+{% if hostvars[host] is defined %}
+ConnectTo = {{ host | replace(".", "_") }}
+{% else %}
+#ConnectTo = {{ host | replace(".", "_") }}  # NOT DEFINED in hosts !!!
+{% endif %}
+{% endfor %}
+
+{%- else -%}
+ConnectTo = {{ tinc_connect | replace(".", "_") }}
+{% endif %}
+
+{# OS specific settings #}
+{% if os_family == "Android" %}
+Device = /dev/tun
+ScriptsInterpreter = /system/bin/sh
+{% endif %}

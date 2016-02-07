@@ -2,3 +2,4 @@
 
 dependencies:
   - role: tinc-common
+  - { role: 'tinc-gather', tags: 'gather', when: "ansible_ssh_host is defined" }

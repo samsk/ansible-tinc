@@ -9,16 +9,16 @@
 SN='tinc-up'
 DN=`dirname "$0"`
 DN=`dirname "$DN"`
-[ -e $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
+[ -x $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
 [ "$?" = "99" ] && exit 0
-[ -e $DN/$SN ] && $DN/$SN "$@"
+[ -x $DN/$SN ] && $DN/$SN "$@"
 [ "$?" = "99" ] && exit 0
 
-ifconfig $INTERFACE {{ tinc_ip }} netmask 255.255.255.0
+ifconfig "$INTERFACE" {{ tinc_ip }} netmask 255.255.255.0
 
 {% if tinc_subnet is defined and tinc_subnet is iterable %}
 # disable rp filter if serving multiple subnets
-sysctl -w net.ipv4.conf.$ARG_DEV.rp_filter=0
+echo 0 > /proc/sys/net/ipv4/conf/$INTERFACE/rp_filter
 
 {% endif %}
 

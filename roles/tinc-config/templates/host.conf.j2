@@ -1,17 +1,19 @@
 ## {{ tinc_host }}
 # {{ ansible_managed }}
-Port = 23001
-Compression = 10
+Port = {{ tinc_port }}
+{% if tinc_compression != "" %}
+Compression = {{ tinc_compression }}
+{% endif %}
 IndirectData = {{ tinc_indirect }}
 
 {% if tinc_remote is defined %}
 Address = {{ tinc_remote }}
 {% elif ansible_host != "" %}
 Address = {{ ansible_host }}
-{% endif %}
+{% endif -%}
 
 {% if tinc_subnet is defined %}
-{% if tinc_subnet is iterable %}
+{% if tinc_subnet is not string and tinc_subnet is iterable %}
 {% for subnet in tinc_subnet %}
 Subnet = {{ subnet }}
 {% endfor %}
@@ -21,3 +23,4 @@ Subnet = {{ tinc_subnet }}
 {% else %}
 Subnet = {{ tinc_ip }}/32
 {% endif %}
+

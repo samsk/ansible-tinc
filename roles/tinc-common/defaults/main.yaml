@@ -3,10 +3,19 @@
 # compat
 ansible_host: '{{ ansible_ssh_host | default("") }}'
 
+# tinc dirs
 config_dir: /etc/tinc/{{ vpn_name }}/config
 all_config_dir: "{{ config_dir }}/_all"
 
 tinc_host: '{{ inventory_hostname | replace(".", "_") }}'
 host_config_dir: "{{ config_dir }}/{{ tinc_host }}"
 
+# tinc presets
+tinc_port: 23001
 tinc_indirect: 'no'
+tinc_compression: 10
+
+# os defaults
+os_family:
+os_distribution:
+os_pkg_mgr:

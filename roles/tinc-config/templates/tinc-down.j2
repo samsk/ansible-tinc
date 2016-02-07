@@ -9,11 +9,11 @@
 SN='tinc-down'
 DN=`dirname "$0"`
 DN=`dirname "$DN"`
-[ -e $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
+[ -x $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
 [ "$?" = "99" ] && exit 0
-[ -e $DN/$SN ] && $DN/$SN "$@"
+[ -x $DN/$SN ] && $DN/$SN "$@"
 [ "$?" = "99" ] && exit 0
 
-ifconfig $INTERFACE down
+ifconfig "$INTERFACE" down
 
 exit 0
