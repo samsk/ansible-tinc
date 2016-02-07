@@ -1,0 +1,7 @@
+---
+
+- name: Get distribution info
+  set_fact: >
+    os_distribution="{ansible_distribution}"
+    os_family="{ansible_os_family}"
+    os_pkg_mgr="{ansible_pkg_mgr}"

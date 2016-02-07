@@ -1,7 +1,13 @@
 ---
 
+# gather facts
+- hosts: '{{ vpn_name | default("UNDEFINED") }}'
+  roles:
+    - { role: 'tinc-gather', tags: 'gather', when: "ansible_ssh_host is defined" }
+
 # generate config for all hosts
 - hosts: '{{ vpn_name | default("UNDEFINED") }}'
+  gather_facts: no
   connection: local
   roles:
     - { role: 'tinc-config', tags: 'config' }

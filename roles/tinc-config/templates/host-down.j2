@@ -1,11 +1,17 @@
-#!/bin/sh
+#!{{ os_shell }}
 #
 # {{ ansible_managed }}
 
-SN="host-down"
+# start user handler scripts
+#	/etc/tinc/<handler>.<vpn_name>
+#	/etc/tinc/<handler>
+# stop processing if script returns 99
+SN='host-down'
 DN=`dirname "$0"`
 DN=`dirname "$DN"`
 [ -e $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
+[ "$?" = "99" ] && exit 0
 [ -e $DN/$SN ] && $DN/$SN "$@"
+[ "$?" = "99" ] && exit 0
 
 exit 0

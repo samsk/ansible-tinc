@@ -16,9 +16,7 @@ DecrementTTL = no
 LocalDiscovery = yes
 
 {% for host in groups['all'] %}
-{% if (hostvars[host]['tinc_type'] | default('client')) == 'gw' %}
-{% if tinc_hostname != hostvars[host]['tinc_hostname'] %}
-ConnectTo = {{ hostvars[host]['tinc_hostname'] | replace(".", "_") }}
-{% endif %}
+{% if inventory_hostname != hostvars[host]['inventory_hostname'] and hostvars[host]['ansible_ssh_host'] is defined %}
+ConnectTo = {{ hostvars[host]['inventory_hostname'] | replace(".", "_") }}
 {% endif %}
 {% endfor %}

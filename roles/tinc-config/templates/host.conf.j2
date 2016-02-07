@@ -6,7 +6,18 @@ IndirectData = {{ tinc_indirect }}
 
 {% if tinc_remote is defined %}
 Address = {{ tinc_remote }}
-{% else %}
+{% elif ansible_host != "" %}
 Address = {{ ansible_host }}
 {% endif %}
-Subnet = {{ tinc_ip }}/{{ tinc_subnet }}
+
+{% if tinc_subnet is defined %}
+{% if tinc_subnet is iterable %}
+{% for subnet in tinc_subnet %}
+Subnet = {{ subnet }}
+{% endfor %}
+{% else %}
+Subnet = {{ tinc_subnet }}
+{% endif %}
+{% else %}
+Subnet = {{ tinc_ip }}/32
+{% endif %}

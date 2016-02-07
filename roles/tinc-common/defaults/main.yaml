@@ -4,10 +4,9 @@
 ansible_host: '{{ ansible_ssh_host | default("") }}'
 
 config_dir: /etc/tinc/{{ vpn_name }}/config
-all_config_dir: "{{ config_dir }}/all"
+all_config_dir: "{{ config_dir }}/_all"
 
-tinc_host: '{{ tinc_hostname | replace(".", "_") }}'
+tinc_host: '{{ inventory_hostname | replace(".", "_") }}'
 host_config_dir: "{{ config_dir }}/{{ tinc_host }}"
 
-tinc_type: 'client'
 tinc_indirect: 'no'

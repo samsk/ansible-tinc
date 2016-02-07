@@ -2,7 +2,9 @@
 ## {{ ansible_managed }}
 
 {% for host in groups['all'] %}
+{% if hostvars[host]['tinc_hostname'] is defined %}
 {{ hostvars[host]['tinc_ip'] }} {{ hostvars[host]['tinc_hostname'] }}
+{% endif %}
 {% endfor %}
 
 ##

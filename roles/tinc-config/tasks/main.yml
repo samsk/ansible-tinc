@@ -64,6 +64,7 @@
     - host-down
     - subnet-up
     - subnet-down
+    - common.sh
 
 - name: Build hosts.snip
   template: >
@@ -80,7 +81,7 @@
 - name: Remote TMP dir
   command: rm -f {{ all_config_dir }}/*
 
-- name: Pack client configs
+- name: Pack configs
   shell: tar -czf {{ config_dir }}/{{ tinc_host }}.tar.gz .
   args:
     chdir: "{{ host_config_dir }}"
