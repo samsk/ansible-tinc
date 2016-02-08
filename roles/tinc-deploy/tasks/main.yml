@@ -9,3 +9,8 @@
   synchronize: >
     src={{ host_config_dir }}/
     dest=/etc/tinc/{{ vpn_name }}
+
+- name: Restart tincd
+  service:
+    name: "{{ tincd_service }}"
+    state: restarted

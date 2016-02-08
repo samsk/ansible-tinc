@@ -1,3 +1,4 @@
 ---
 
 os_shell: '/bin/sh'
+tincd_service: tincd

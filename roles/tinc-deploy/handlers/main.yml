@@ -1,0 +1,6 @@
+---
+
+- name: restart tincd
+  service: >
+    name="{{ tincd_service }}"
+    state=restarted

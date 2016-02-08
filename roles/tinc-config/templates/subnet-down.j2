@@ -8,6 +8,7 @@
 # stop processing if script returns 99
 SN='subnet-down'
 DN=`dirname "$0"`
+. "$DN/common.sh"
 DN=`dirname "$DN"`
 [ -x $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
 [ "$?" = "99" ] && exit 0
@@ -18,6 +19,9 @@ DN=`dirname "$DN"`
 logger -t "tinc.{{ vpn_name }}" "subnet $SUBNET down"
 
 # remove selective route
-ip route del "$SUBNET" via "{{ tinc_ip }}" dev "$INTERFACE"
+if [ -n "$VPN_IPADDR_NODE" ] && [ "${SUBNET%.*}" != "$SUBNET" ]
+then
+	ip route del "$SUBNET" via "$VPN_IPADDR_NODE" dev "$INTERFACE"
+fi
 
 exit 0

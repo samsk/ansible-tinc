@@ -1,6 +1,0 @@
----
-
-- name: restart tinc
-  service: >
-    name=tincd
-    state=restarted

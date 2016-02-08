@@ -1,6 +1,6 @@
 #!{{ os_shell }}
 
-## variable provided by tinc
+## variables provided by tincd
 #NETNAME=
 #NAME=
 #DEVICE=
@@ -14,3 +14,11 @@
 ## our config variables
 VPN_IPADDR="{{ tinc_ip }}"
 VPN_HOSTNAME="{{ tinc_hostname }}"
+
+## our neighs
+{% for host in groups["all"] %}
+VPN_IPADDR_{{ host | replace(".", "_") }}={{ hostvars[host]['tinc_ip'] }}
+{% endfor %}
+
+## current neigh
+VPN_IPADDR_NODE=`eval echo "\\$VPN_IPADDR_$NODE"`
