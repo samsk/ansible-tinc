@@ -6,7 +6,7 @@ FOR /F "tokens=1 delims=:" %A IN ('ipconfig /all ^| findstr /N "TAP-Win"') DO SE
 SET /A linenum = %linenum% - 3
 FOR /F "tokens=2*" %A IN ('ipconfig /all ^| findstr /N ".*" ^| findstr /B "%linenum%:"') DO set interfaceName=%B
 SET interfaceName=%interfaceName:~0,-1%
-REM Now let's change it to "tincVPN"
+REM Now let's change it to "{{ netname }}"
 
-netsh interface set interface name="%interfaceName%" newname="tincVPN"
-netsh interface ip set address name="tincVPN" source=static address={{ tinc_ip }} mask=255.255.255.0 gateway=none
+netsh interface set interface name="%interfaceName%" newname="{{ netname }}"
+netsh interface ip set address name="{{ netname }}" source=static address={{ tinc_ip }} mask=255.255.255.0 gateway=none

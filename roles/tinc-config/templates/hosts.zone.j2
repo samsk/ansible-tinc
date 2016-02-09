@@ -1,0 +1,9 @@
+;### BEGIN tinc/{{ netname }} hosts ####
+;# {{ ansible_managed }}
+
+{% for host in groups['all'] %}
+{{ host | replace(".", "_") }}	IN	A {{ hostvars[host]['tinc_ip'] }}	;{{ hostvars[host]['tinc_hostname'] | default(host)}}
+{% endfor %}
+
+;#
+;### END tinc/{{ netname }} hosts ####

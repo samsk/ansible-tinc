@@ -1,13 +1,13 @@
 ---
 
 # generate config for all hosts
-- hosts: '{{ vpn_name | default("UNDEFINED") }}'
+- hosts: '{{ netname | default("UNDEFINED") }}'
   gather_facts: no
   connection: local
   roles:
     - { role: 'tinc-config', tags: 'config' }
 
 # deploy config to gw hosts
-- hosts: '{{ vpn_name | default("UNDEFINED") }}'
+- hosts: '{{ netname | default("UNDEFINED") }}'
   roles:
     - { role: 'tinc-deploy', tags: 'deploy', when: "ansible_ssh_host is defined" }

@@ -1,4 +1,4 @@
-#### BEGIN tinc/{{ vpn_name }} hosts ####
+#### BEGIN tinc/{{ netname }} hosts ####
 ## {{ ansible_managed }}
 
 {% for host in groups['all'] %}
@@ -8,4 +8,4 @@
 {% endfor %}
 
 ##
-#### END tinc/{{ vpn_name }} hosts ####
+#### END tinc/{{ netname }} hosts ####

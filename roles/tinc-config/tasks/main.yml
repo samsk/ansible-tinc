@@ -64,13 +64,16 @@
     - host-down
     - subnet-up
     - subnet-down
-    - common.sh
 
 - name: Build hosts.snip
   template: >
-    src=hosts.snip.j2
-    dest={{ host_config_dir }}/hosts.snip
+    src={{ item }}.j2
+    dest={{ host_config_dir }}/{{ item }}
     mode=0644
+  with_items:
+    - common.sh
+    - hosts.snip
+    - hosts.zone
 
 - name: Fetch tinc host config
   shell: cp -f {{ host_config_dir }}/hosts/{{ tinc_host }} {{ all_config_dir }}/

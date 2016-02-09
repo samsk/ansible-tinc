@@ -2,7 +2,7 @@
 # {{ ansible_managed }}
 
 Name = {{ tinc_host }}
-BindToAddress = * {{ tinc_port }}
+BindToAddress = * {{ hostvars[inventory_hostname]['tinc_port'] | default(tinc_port)}}
 
 #Device = /dev/net/tun
 DeviceType = tap

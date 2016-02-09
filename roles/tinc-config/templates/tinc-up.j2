@@ -3,13 +3,14 @@
 # {{ ansible_managed }}
 
 # start user handler scripts
-#	/etc/tinc/<handler>.<vpn_name>
+#	/etc/tinc/<handler>.<netname>
 #	/etc/tinc/<handler>
 # stop processing if script returns 99
 SN='tinc-up'
 DN=`dirname "$0"`
+. "$DN/common.sh"
 DN=`dirname "$DN"`
-[ -x $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
+[ -x $DN/$SN.{{ netname }} ] && $DN/$SN.{{ netname }} "$@"
 [ "$?" = "99" ] && exit 0
 [ -x $DN/$SN ] && $DN/$SN "$@"
 [ "$?" = "99" ] && exit 0
@@ -23,13 +24,13 @@ echo 0 > /proc/sys/net/ipv4/conf/$INTERFACE/rp_filter
 {% endif %}
 
 # append hosts as needed
-#if [ -f /etc/tinc/{{ vpn_name }}/hosts.snip ] \
+#if [ -f /etc/tinc/{{ netname }}/hosts.snip ] \
 #	&& -w /etc/hosts \
-#	&& ! grep "### BEGIN tinc/{{ vpn_name }} hosts ###" /etc/hosts >/dev/null;
+#	&& ! grep "### BEGIN tinc/{{ netname }} hosts ###" /etc/hosts >/dev/null;
 #then
-#	cp -f /etc/hosts /etc/hosts.tinc-{{ vpn_name }};
+#	cp -f /etc/hosts /etc/hosts.tinc-{{ netname }};
 #	echo >> /etc/hosts;
-#	cat /etc/tinc/{{ vpn_name }}/hosts.snip >> /etc/hosts;
+#	cat /etc/tinc/{{ netname }}/hosts.snip >> /etc/hosts;
 #	echo >> /etc/hosts;
 #fi;
 

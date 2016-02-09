@@ -14,11 +14,14 @@
 ## our config variables
 VPN_IPADDR="{{ tinc_ip }}"
 VPN_HOSTNAME="{{ tinc_hostname }}"
+export VPN_IPADDR VPN_HOSTNAME
 
 ## our neighs
 {% for host in groups["all"] %}
 VPN_IPADDR_{{ host | replace(".", "_") }}={{ hostvars[host]['tinc_ip'] }}
+export VPN_IPADDR_{{ host | replace(".", "_") }}
 {% endfor %}
 
 ## current neigh
 VPN_IPADDR_NODE=`eval echo "\\$VPN_IPADDR_$NODE"`
+export VPN_IPADDR_NODE

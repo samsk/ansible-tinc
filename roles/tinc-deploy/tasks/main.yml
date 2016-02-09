@@ -2,15 +2,21 @@
 
 - name: Clear hosts config dir
   file: >
-    path=/etc/tinc/{{ vpn_name }}/hosts
+    path=/etc/tinc/{{ netname }}/hosts
     state=absent
 
 - name: Deploy config
   synchronize: >
     src={{ host_config_dir }}/
-    dest=/etc/tinc/{{ vpn_name }}
+    dest=/etc/tinc/{{ netname }}
+  notify: restart tincd
 
-- name: Restart tincd
+- name: Start tincd
   service:
     name: "{{ tincd_service }}"
-    state: restarted
+    state: started
+
+- name: Start tincd on boot
+  service:
+    name: "{{ tincd_service }}"
+    enabled: yes

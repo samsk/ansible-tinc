@@ -3,14 +3,14 @@
 # {{ ansible_managed }}
 
 # start user handler scripts
-#	/etc/tinc/<handler>.<vpn_name>
+#	/etc/tinc/<handler>.<netname>
 #	/etc/tinc/<handler>
 # stop processing if script returns 99
 SN='subnet-up'
 DN=`dirname "$0"`
 . "$DN/common.sh"
 DN=`dirname "$DN"`
-[ -x $DN/$SN.{{ vpn_name }} ] && $DN/$SN.{{ vpn_name }} "$@"
+[ -x $DN/$SN.{{ netname }} ] && $DN/$SN.{{ netname }} "$@"
 [ "$?" = "99" ] && exit 0
 [ -x $DN/$SN ] && $DN/$SN "$@"
 [ "$?" = "99" ] && exit 0
@@ -18,10 +18,10 @@ DN=`dirname "$DN"`
 # add selective route
 if [ -n "$VPN_IPADDR_NODE" ] && [ "${SUBNET%.*}" != "$SUBNET" ]
 then
-	logger -t "tinc.{{ vpn_name }}" "subnet $SUBNET reachable via node $NODE ($VPN_IPADDR_NODE)"
+	logger -t "tinc.{{ netname }}" "subnet $SUBNET reachable via node $NODE ($VPN_IPADDR_NODE)"
 	ip route add "$SUBNET" via "$VPN_IPADDR_NODE" dev "$INTERFACE"
 else
-	logger -t "tinc.{{ vpn_name }}" "subnet $SUBNET available via node $NODE (no route setup)"
+	logger -t "tinc.{{ netname }}" "subnet $SUBNET available via node $NODE (no route setup)"
 fi
 
 exit 0

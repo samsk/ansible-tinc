@@ -1,10 +1,12 @@
 ## {{ tinc_host }}
+#
 # {{ ansible_managed }}
-Port = {{ tinc_port }}
-{% if tinc_compression != "" %}
-Compression = {{ tinc_compression }}
+
+Port = {{ hostvars[inventory_hostname]['tinc_port'] | default(tinc_port) }}
+{% if hostvars[inventory_hostname]['tinc_compression'] is defined or tinc_compression != "" %}
+Compression = {{ hostvars[inventory_hostname]['tinc_compression'] | default(tinc_compression) }}
 {% endif %}
-IndirectData = {{ tinc_indirect }}
+IndirectData = {{ hostvars[inventory_hostname]['tinc_indirect'] | default(tinc_indirect) }}
 
 {% if tinc_remote is defined %}
 Address = {{ tinc_remote }}

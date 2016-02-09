@@ -1,19 +1,23 @@
 ---
 
-# compat
+# compat for ansible 2+
+# NOTE: hower other parts are using ansible_ss_host explicitly, so this is not enough
 ansible_host: '{{ ansible_ssh_host | default("") }}'
 
 # tinc dirs
-config_dir: /etc/tinc/{{ vpn_name }}/config
+config_dir: /etc/tinc/{{ netname }}/config
 all_config_dir: "{{ config_dir }}/_all"
 
 tinc_host: '{{ inventory_hostname | replace(".", "_") }}'
 host_config_dir: "{{ config_dir }}/{{ tinc_host }}"
 
+tinc_hostname: '{{ inventory_hostname }}'
+
 # tinc presets
-tinc_port: 23001
+tinc_port: 655
 tinc_indirect: 'no'
 tinc_compression: 10
+
 
 # os defaults
 os_family:
