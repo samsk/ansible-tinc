@@ -28,8 +28,8 @@ $ ansible-playbook site.yml -e netname=vpn1
 If that completes OK, all the hosts accessible via ssh (ansible_connection != local) will have tinc configured and running. All other hosts will have tinc configuration generated in config
 directory, so it can be distributed manualy as necessary.
 
-*If you want to auto setup tinc on local node, you can not configure it as ansible_connection=local, because this will not deploy generated scripts. But this will not slow down local script
-generation - configuration for every node is first localy generated and only after that synchronized to remote node.*
+*If you want to auto setup tinc on local node, you can not configure it as ansible_connection=local, because this will not deploy generated scripts. There should be no slow down,
+because configuration for every node is first localy generated and only after that synchronized to remote node.*
 
 ## IP addressing
 
