@@ -1,7 +1,7 @@
 #### BEGIN tinc/{{ netname }} hosts ####
 ## {{ ansible_managed }}
 
-{% for host in groups['all'] %}
+{% for host in groups[netname] %}
 {% if hostvars[host]['tinc_hostname'] is defined %}
 {{ hostvars[host]['tinc_ip'] }} {{ hostvars[host]['tinc_hostname'] }}
 {% endif %}

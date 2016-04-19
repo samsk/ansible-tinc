@@ -17,7 +17,7 @@ VPN_HOSTNAME="{{ tinc_hostname }}"
 export VPN_IPADDR VPN_HOSTNAME
 
 ## our neighs
-{% for host in groups["all"] %}
+{% for host in groups[netname] %}
 VPN_IPADDR_{{ host | replace(".", "_") }}={{ hostvars[host]['tinc_ip'] }}
 export VPN_IPADDR_{{ host | replace(".", "_") }}
 {% endfor %}

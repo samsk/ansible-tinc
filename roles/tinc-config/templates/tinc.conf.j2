@@ -18,7 +18,7 @@ LocalDiscovery = yes
 {# generate ConnectTo #}
 {% if tinc_connect is undefined -%}
 
-{% for host in groups['all'] %}
+{% for host in groups[netname] %}
 {% if inventory_hostname != hostvars[host]['inventory_hostname'] and hostvars[host]['ansible_ssh_host'] is defined %}
 ConnectTo = {{ hostvars[host]['inventory_hostname'] | replace(".", "_") }}
 {% endif %}
