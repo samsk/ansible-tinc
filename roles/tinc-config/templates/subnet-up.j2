@@ -20,8 +20,8 @@ if [ -n "$VPN_IPADDR_NODE" ] && [ "${SUBNET%.*}" != "$SUBNET" ]
 then
 	logger -t "tinc.{{ netname }}" "subnet $SUBNET reachable via node $NODE ($VPN_IPADDR_NODE)"
 	ip route add "$SUBNET" via "$VPN_IPADDR_NODE" dev "$INTERFACE"
-else
-	logger -t "tinc.{{ netname }}" "subnet $SUBNET available via node $NODE (no route setup)"
+#else
+#	logger -t "tinc.{{ netname }}" "subnet $SUBNET available via node $NODE (no route setup)"
 fi
 
 exit 0
