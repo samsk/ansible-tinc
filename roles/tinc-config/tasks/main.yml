@@ -1,5 +1,11 @@
 ---
 
+- name: Check if tinc executable is present
+  command: tinc --version
+  register: tinc_check
+  ignore_errors: yes
+  changed_when: no
+
 - name: Create network dir
   file: >
     path={{ config_dir }}
@@ -23,6 +29,36 @@
     recurse=True
     state=directory
 
+- name: Generate RSA keys (via tinc)
+  shell: rm -f "{{ host_config_dir }}/tinc.conf";cat | tinc -c "{{ host_config_dir }}" generate-rsa-keys 4096
+  args:
+    creates: "{{ host_config_dir }}/rsa_key.pub"
+  when: tinc_check.rc == 0
+
+- name: Generate ED25519 keys (via tinc)
+  shell: rm -f "{{ host_config_dir }}/tinc.conf";cat | tinc -c "{{ host_config_dir }}" generate-ed25519-keys
+  args:
+    creates: "{{ host_config_dir }}/ed25519_key.pub"
+  when: tinc_check.rc == 0
+
+- name: Generate RSA private key (via openssl)
+  shell: openssl genrsa -out {{ host_config_dir }}/rsa_key.priv 4096
+  args:
+    creates: "{{ host_config_dir }}/rsa_key.priv"
+  when: tinc_check.rc != 0
+
+- name: Secure RSA private key
+  file: >
+    path="{{ host_config_dir }}/rsa_key.priv"
+    mode=0600
+  when: tinc_check.rc != 0
+
+- name: Export RSA public key
+  shell: openssl rsa -in {{ host_config_dir }}/rsa_key.priv -outform PEM -out {{ host_config_dir }}/rsa_key.pub -pubout
+  args:
+    creates: "{{ host_config_dir }}/rsa_key.pub"
+  when: tinc_check.rc != 0
+
 - name: Generate tinc.conf
   template: >
     src=tinc.conf.j2
@@ -33,22 +69,10 @@
     src=host.conf.j2
     dest={{ host_config_dir }}/hosts/{{ tinc_host }}
 
-- name: Generate RSA private key
-  shell: openssl genrsa -out {{ host_config_dir }}/rsa_key.priv 4096
-  args:
-    creates: "{{ host_config_dir }}/rsa_key.priv"
+- name: Add public ED25519 key to host config
+  shell: cat {{ host_config_dir }}/ed25519_key.pub >> {{ host_config_dir }}/hosts/{{ tinc_host }}
 
-- name: Secure RSA private key
-  file: >
-    path="{{ host_config_dir }}/rsa_key.priv"
-    mode=0600
-
-- name: Export RSA public key
-  shell: openssl rsa -in {{ host_config_dir }}/rsa_key.priv -outform PEM -out {{ host_config_dir }}/rsa_key.pub -pubout
-  args:
-    creates: "{{ host_config_dir }}/rsa_key.pub"
-
-- name: Add public key to host config
+- name: Add public RSA key to host config
   shell: cat {{ host_config_dir }}/rsa_key.pub >> {{ host_config_dir }}/hosts/{{ tinc_host }}
 
 - name: Create scripts

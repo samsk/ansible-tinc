@@ -17,6 +17,8 @@ DN=`dirname "$DN"`
 
 ifconfig "$INTERFACE" {{ tinc_ip }} netmask 255.255.255.0
 
+logger -t "tinc.{{ netname }}" "local SERVER *{{ tinc_host }}* is UP";
+
 {% if tinc_subnet is defined and tinc_subnet is iterable %}
 # disable rp filter if serving multiple subnets
 echo 0 > /proc/sys/net/ipv4/conf/$INTERFACE/rp_filter

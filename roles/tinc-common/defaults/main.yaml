@@ -8,7 +8,7 @@ ansible_host: '{{ ansible_ssh_host | default("") }}'
 config_dir: /etc/tinc/{{ netname }}/config
 all_config_dir: "{{ config_dir }}/_all"
 
-tinc_host: '{{ inventory_hostname | replace(".", "_") }}'
+tinc_host: '{{ inventory_hostname | to_tinc_host }}'
 host_config_dir: "{{ config_dir }}/{{ tinc_host }}"
 
 tinc_hostname: '{{ inventory_hostname }}'

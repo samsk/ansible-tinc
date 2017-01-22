@@ -10,4 +10,4 @@
 # deploy config to gw hosts
 - hosts: '{{ netname | default("UNDEFINED") }}'
   roles:
-    - { role: 'tinc-deploy', tags: 'deploy', when: "ansible_ssh_host is defined" }
+    - { role: 'tinc-deploy', tags: 'deploy', when: "ansible_ssh_host is defined and ansible_connection != 'local'" }

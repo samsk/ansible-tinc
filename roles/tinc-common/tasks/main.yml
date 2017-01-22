@@ -1,8 +1,9 @@
 ---
 
-#- name: Load common vars
-#  include_vars: >
-#    common.yml
+- name: Load default vars
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "os_default.yml"
 
 - name: Load os dependent vars
   include_vars: "{{ item }}"

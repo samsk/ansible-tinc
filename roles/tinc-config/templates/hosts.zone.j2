@@ -2,7 +2,7 @@
 ;# {{ ansible_managed }}
 
 {% for host in groups[netname] %}
-{{ host | replace(".", "_") }}	IN	A {{ hostvars[host]['tinc_ip'] }}	;{{ hostvars[host]['tinc_hostname'] | default(host)}}
+{{ host | to_tinc_host }}	IN	A {{ hostvars[host]['tinc_ip'] }}	;{{ hostvars[host]['tinc_hostname'] | default(host)}}
 {% endfor %}
 
 ;#

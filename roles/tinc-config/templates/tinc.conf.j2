@@ -14,32 +14,44 @@ DirectOnly = no
 Broadcast = mst
 DecrementTTL = no
 LocalDiscovery = yes
+ExperimentalProtocol = no
 
 {# generate ConnectTo #}
 {% if tinc_connect is undefined -%}
 
 {% for host in groups[netname] %}
-{% if inventory_hostname != hostvars[host]['inventory_hostname'] and hostvars[host]['ansible_ssh_host'] is defined %}
-ConnectTo = {{ hostvars[host]['inventory_hostname'] | replace(".", "_") }}
+{% if inventory_hostname != hostvars[host]['inventory_hostname'] and hostvars[host]['ansible_ssh_host'] is defined -%}
+{% if hostvars[host]['tinc_visible_from'] is undefined %}
+ConnectTo = {{ hostvars[host]['inventory_hostname'] | to_tinc_host }}
+{% elif hostvars[host]['tinc_visible_from'] is not string and hostvars[host]['tinc_visible_from'] is iterable %}
+{% for host_visible_from in hostvars[host]['tinc_visible_from'] %}
+{% if inventory_hostname == host_visible_from %}
+ConnectTo = {{ hostvars[host]['inventory_hostname'] | to_tinc_host }}
 {% endif %}
 {% endfor %}
+{% elif inventory_hostname == hostvars[host]['tinc_visible_from'] %}
+ConnectTo = {{ hostvars[host]['inventory_hostname'] | to_tinc_host }}
+{% endif -%}
+
+{% endif %}
+{% endfor -%}
 
 {%- elif tinc_connect is not string and tinc_connect is iterable -%}
 
 {% for host in tinc_connect %}
 {% if hostvars[host] is defined %}
-ConnectTo = {{ host | replace(".", "_") }}
+ConnectTo = {{ host | to_tinc_host }}
 {% else %}
-#ConnectTo = {{ host | replace(".", "_") }}  # NOT DEFINED in hosts !!!
+#ConnectTo = {{ host | to_tinc_host }}  # NOT DEFINED in hosts !!!
 {% endif %}
 {% endfor %}
 
 {%- else -%}
-ConnectTo = {{ tinc_connect | replace(".", "_") }}
-{% endif %}
+ConnectTo = {{ tinc_connect | to_tinc_host }}
+{% endif -%}
 
 {# OS specific settings #}
 {% if os_family == "Android" %}
 Device = /dev/tun
 ScriptsInterpreter = /system/bin/sh
-{% endif %}
+{% endif -%}

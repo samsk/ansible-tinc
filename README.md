@@ -3,6 +3,15 @@
 This playbook generates tinc config for whole tinc vpn network (including clients), and deploys generated configs to ssh reachable hosts. 
 It factually reduces tinc network setup to writing single hosts file.
 
+## Features
+
+- support for tinc 1.0 and 1.1
+- config generation works without tinc installed
+- generates whole configuration localy
+- generates also hosts and zone files
+- pre-generates all needed handler scripts
+- supports node visibility configuration (some nodes might be firewalled)
+
 ## Running
 
 Create a tinc hosts file with host group coresponding to desired tinc network name (*netname*).
@@ -15,12 +24,14 @@ gw2	ansible_connection=local	tinc_ip=172.16.100.2	tinc_hostname=gw2.in.domain	ti
 gw3	ansible_ssh_host=vpn-host3	tinc_ip=172.16.100.18	tinc_hostname=gw3.in.domain	tinc_subnet='172.16.100.16/29' tinc_port=1655
 client1	ansible_connection=local	tinc_ip=172.16.100.10	tinc_hostname=client1.in.domain
 client2 ansible_connection=local	tinc_ip=172.16.100.11	tinc_hostname=client2.in.domaim os_family=Android tinc_connect='["gw1","gw2"]'
+# gw4 is visible on from gw3 !
+gw4	ansible_ssh_host=vpn-host4	tinc_ip=172.16.100.101	tinc_hostname=gw4.in.domain	tinc_visible_from='["gw3"]'
 [vpn2]
 ...
 
 ```
 
-Next up, run ansible.
+Next up, run ansible:
 
 ```bash
 $ ansible-playbook site.yml -e netname=vpn1
@@ -31,6 +42,12 @@ All other hosts will have tinc configuration generated in config directory (*/et
 
 *If you want to auto setup tinc on local node, you can not configure it as ansible_connection=local, because this will not deploy generated scripts. But this will not slow down local script
 generation - configuration for every node is first localy generated and only after that synchronized to remote node.*
+
+If you want to only generate configuration, and distribute it yourself just run:
+
+```bash
+$ ansible-playbook site.yml -e netname=vpn1 -t config
+```
 
 ## IP addressing
 
