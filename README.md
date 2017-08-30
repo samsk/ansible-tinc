@@ -24,7 +24,7 @@ gw2	ansible_connection=local	tinc_ip=172.16.100.2	tinc_hostname=gw2.in.domain	ti
 gw3	ansible_ssh_host=vpn-host3	tinc_ip=172.16.100.18	tinc_hostname=gw3.in.domain	tinc_subnet='172.16.100.16/29' tinc_port=1655
 client1	ansible_connection=local	tinc_ip=172.16.100.10	tinc_hostname=client1.in.domain
 client2 ansible_connection=local	tinc_ip=172.16.100.11	tinc_hostname=client2.in.domaim os_family=Android tinc_connect='["gw1","gw2"]'
-# gw4 is visible on from gw3 !
+# gw4 is visible only from gw3 !
 gw4	ansible_ssh_host=vpn-host4	tinc_ip=172.16.100.101	tinc_hostname=gw4.in.domain	tinc_visible_from='["gw3"]'
 [vpn2]
 ...
@@ -66,6 +66,7 @@ There are additional variables provided, that will override default settings. Th
 - **tinc_compression**	- specify tinc compression level (default = 10)
 - **tinc_indirect**	- set IndirectData (default = 'no')
 - **tinc_connect**	- by default all hosts will connect only to public hosts (where *ansible_connection* != local), with this you can override this
+- **tinc_visible_from**	- specify which hosts are only able to connect to this node (ie. all other are firewalled)
 - **os_family**		- override *ansible_os_family*, this is specially there for *Android* clients
 
 ## Custom Up/Down scripts
