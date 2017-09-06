@@ -17,7 +17,7 @@ tinc_hostname: '{{ inventory_hostname }}'
 tinc_port: 655
 tinc_indirect: 'no'
 tinc_compression: 10
-
+tinc_mode: 'router'
 
 # os defaults
 os_family:

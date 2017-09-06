@@ -12,8 +12,9 @@ IndirectData = {{ hostvars[inventory_hostname]['tinc_indirect'] | default(tinc_i
 Address = {{ tinc_remote }}
 {% elif ansible_host != "" %}
 Address = {{ ansible_host }}
-{% endif -%}
+{% endif %}
 
+# auto-propagated subnets
 {% if tinc_subnet is defined %}
 {% if tinc_subnet is not string and tinc_subnet is iterable %}
 {% for subnet in tinc_subnet %}
@@ -24,5 +25,16 @@ Subnet = {{ tinc_subnet }}
 {% endif %}
 {% else %}
 Subnet = {{ tinc_ip }}/32
+{% endif %}
+
+{% if tinc_subnet_hidden is defined %}
+# hidden subnets
+{% if tinc_subnet_hidden is not string and tinc_subnet_hidden is iterable %}
+{% for subnet in tinc_subnet_hidden %}
+Subnet = {{ subnet }}
+{% endfor %}
+{% else %}
+Subnet = {{ tinc_subnet_hidden }}
+{% endif %}
 {% endif %}
 

@@ -1,4 +1,4 @@
 ---
 
-os_shell: '/bin/sh'
+os_shell: '/bin/bash'
 tincd_service: tincd

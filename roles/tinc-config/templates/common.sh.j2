@@ -25,3 +25,23 @@ export VPN_IPADDR_{{ host | to_tinc_host }}
 ## current neigh
 VPN_IPADDR_NODE=`eval echo "\\$VPN_IPADDR_$NODE"`
 export VPN_IPADDR_NODE
+
+## hidden subnets
+function subnet_hidden() {
+	case "$1" in
+{% if tinc_subnet_hidden is defined %}
+{% if tinc_subnet_hidden is not string and tinc_subnet_hidden is iterable %}
+{% for subnet in tinc_subnet_hidden %}
+		"{{ subnet }}" ) return 0;
+				;;
+{% endfor %}
+{% else %}
+		"{{ tinc_subnet_hidden }}" ) return 0;
+				;;
+{% endif %}
+{% endif %}
+		* ) return 1;
+				;;
+	esac;
+	return 1;
+}

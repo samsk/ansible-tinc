@@ -4,13 +4,9 @@
 Name = {{ tinc_host }}
 BindToAddress = * {{ hostvars[inventory_hostname]['tinc_port'] | default(tinc_port)}}
 
-#Device = /dev/net/tun
-#DeviceType = tap
-#DeviceType = tun
-AddressFamily = ipv4
-#Interface = tun0
+#AddressFamily = ipv4
 #Mode = switch
-Mode = router
+Mode = {{ tinc_mode }}
 
 DirectOnly = no
 Broadcast = mst

@@ -16,7 +16,7 @@ DN=`dirname "$DN"`
 [ "$?" = "99" ] && exit 0
 
 # add selective route
-if [ -n "$VPN_IPADDR_NODE" ] && [ "${SUBNET%.*}" != "$SUBNET" ]
+if [ -n "$VPN_IPADDR_NODE" ] && [ "${SUBNET%.*}" != "$SUBNET" ] && ! subnet_hidden "$SUBNET"
 then
 	logger -t "tinc.{{ netname }}" "subnet $SUBNET reachable via node $NODE ($VPN_IPADDR_NODE)"
 	ip route add "$SUBNET" via "$VPN_IPADDR_NODE" dev "$INTERFACE"
